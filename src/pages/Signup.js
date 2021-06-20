@@ -40,10 +40,18 @@ const Signup = () => {
   const { register, handleSubmit, errors } = useForm();
   const [error, setError] = useState("");
   const onSubmit = async (data) => {
+    data.role = 'jobSeeker'
     try {
       setError("");
       await signUp(data.email, data.password);
       await updateName(data.name);
+      await fetch('http://localhost:8000/addUser', {
+        method: 'POST',
+        body: JSON.stringify(data),
+        headers: {
+          'Content-type': 'application/json; charset=UTF-8',
+        },
+      })
       history.replace("/");
     } catch (error) {
       setError("User alredy exist.");
@@ -82,7 +90,6 @@ const Signup = () => {
               error={Boolean(errors.name)}
             />
             <TextField
-              autoComplete="off"
               name="email"
               inputRef={register({
                 required: "Email is required.",

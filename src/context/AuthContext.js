@@ -5,6 +5,7 @@ const AuthContext = React.createContext();
 
 const AuthProvider = ({ children }) => {
   const [currentUserInfo, setCurrentUserInfo] = useState();
+  const [user, setUser] = useState([])
   const [loading, setLoading] = useState(true);
 
   const signUp = (email, password) => {
@@ -22,19 +23,15 @@ const AuthProvider = ({ children }) => {
 
   useEffect(() => {
     const unSubscribe = auth.onAuthStateChanged((user) => {
-      // if (user) {
-      //   fetch(
-      //     `https://fastpro-cleaning-services.herokuapp.com/isAdmin?email=${user.email}`
-      //   )
-      //     .then((res) => res.json())
-      //     .then((data) => {
-      //       if (data) {
-      //         user.isAdmin = true;
-      //       } else {
-      //         user.isAdmin = false;
-      //       }
-      //     });
-      // }
+      if (user) {
+        fetch(
+          `http://localhost:8000/user?email=${user.email}`
+        )
+          .then((res) => res.json())
+          .then((data) => {
+            if (data) setUser(data)
+          });
+      }
       setCurrentUserInfo(user);
       setLoading(false);
     });
@@ -44,7 +41,7 @@ const AuthProvider = ({ children }) => {
   const value = {
     currentUserInfo,
     logOut,
-    logIn, signUp, updateName
+    logIn, signUp, updateName, user, setUser
   };
   return (
     <AuthContext.Provider value={value}>

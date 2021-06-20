@@ -11,7 +11,7 @@ const Jobs = () => {
   return (
     <Box pt={1} pb={5} style={{ background: "#f8f8f8" }}>
       <Container>
-        <Typography align="center" variant="h4">
+        <Typography gutterBottom align="center" variant="h4">
           Find Your Dream Jobs
         </Typography>
         <Grid container spacing={4}>

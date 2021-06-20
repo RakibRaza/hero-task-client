@@ -29,17 +29,18 @@ const useStyles = makeStyles((theme) => ({
 
 const NavBar = () => {
   const classes = useStyles();
-  const { logOut, currentUserInfo } = useAuthContext();
+  const { logOut, currentUserInfo, user, setUser } = useAuthContext();
   const [open, setOpen] = useState(false);
   const handleLogOut = async () => {
     try {
       await logOut();
+      setUser({})
     } catch (error) {
       console.log(error.message);
     }
   };
-  return (
 
+  return (
     <AppBar position="static" color="secondary">
       <Container>
         <Toolbar>
@@ -49,7 +50,7 @@ const NavBar = () => {
               <Button component={Link} to="/" color="inherit">
                 Home
               </Button>
-              {currentUserInfo && (
+              {user[0]?.role === 'employer' && (
                 <Button component={Link} to="/dashboard" color="inherit">
                   Dashboard
                 </Button>

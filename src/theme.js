@@ -20,7 +20,7 @@ export const theme = createMuiTheme({
     h4: {
       fontWeight: "bold",
       color: "#15287d",
-      margin: "24px",
+      marginTop: '10px'
     },
   },
 });

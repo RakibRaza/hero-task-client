@@ -50,7 +50,7 @@ const useStyles = makeStyles((theme) => ({
 const EmployerSignupForm = () => {
   const classes = useStyles();
   const history = useHistory();
-  const { signUp, updateName } = useAuthContext();
+  const { signUp, updateName, setUser } = useAuthContext();
   const { register, handleSubmit, errors, control } = useForm();
   const [error, setError] = useState("");
   const [paymentError, setPaymentError] = useState("");
@@ -94,6 +94,7 @@ const EmployerSignupForm = () => {
             'Content-type': 'application/json; charset=UTF-8',
           },
         })
+        setUser([data])
         history.replace("/");
 
       } catch (error) {
@@ -181,7 +182,7 @@ const EmployerSignupForm = () => {
             {/* Select */}
             <FormControl
               fullWidth
-              error={Boolean(errors.course)}
+              error={Boolean(errors.accountType)}
             >
               <InputLabel style={{ zIndex: '10' }} >
                 Select Your account type
@@ -198,7 +199,7 @@ const EmployerSignupForm = () => {
                 control={control}
                 defaultValue=""
                 rules={{
-                  required: "please choose your course.",
+                  required: "please choose your account type.",
                 }}
               />
               <FormHelperText>{errors.accountType?.message}</FormHelperText>
