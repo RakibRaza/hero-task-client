@@ -25,10 +25,11 @@ const JobSeekerDashboard = () => {
     <Box pt={1} pb={5} style={{ background: "#f8f8f8" }}>
       <Container>
         <Grid container spacing={4}>
+          {/* Profile Card */}
           <Grid item xs={12} sm={6} md={4}>
             <Box component={Paper} p={5} align="center">
               <Avatar
-                alt="Remy Sharp"
+                alt={user?.name}
                 src={currentUserInfo?.photoURL}
                 className={classes.large}
               />
@@ -40,6 +41,7 @@ const JobSeekerDashboard = () => {
               </Typography>
             </Box>
           </Grid>
+          {/* Jobs Card */}
           {applications.map((job) => (
             <Grid key={job._id} item xs={12} sm={6} md={4}>
               <Box p={3} style={{ background: "#fff" }}>

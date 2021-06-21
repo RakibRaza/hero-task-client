@@ -44,10 +44,11 @@ const AdminDashboard = () => {
     <Box pt={1} pb={5} style={{ background: "#f8f8f8" }}>
       <Container>
         <Grid container spacing={4}>
+          {/* Profile Card*/}
           <Grid item xs={12} sm={6} md={4}>
             <Box style={{ height: '100%' }} component={Paper} p={5} align="center">
               <Avatar
-                alt="Remy Sharp"
+                alt={user?.name}
                 src={currentUserInfo?.photoURL}
                 className={classes.large}
               />
@@ -59,9 +60,10 @@ const AdminDashboard = () => {
               </Typography>
             </Box>
           </Grid>
+          {/* Jobs Card */}
           {jobs.map((job) => (
             <Grid key={job._id} item xs={12} sm={6} md={4}>
-              <Box style={{ height: '100%' }} p={3} style={{ background: "#fff" }}>
+              <Box p={3} style={{ background: "#fff" }}>
                 <Typography variant="h5" align="center">
                   {job.title}
                 </Typography>
@@ -69,11 +71,8 @@ const AdminDashboard = () => {
                   {job.author}
                 </Typography>
                 <Typography>{job.desc}</Typography>
-                <Box align='center' mt={2}>
-                  <TextField
-                    select
-                    fullWidth
-                    value={job.status}
+                <Box mt={2}>
+                  <TextField select fullWidth value={job.status}
                     onChange={(e) => handleChange(e, job._id)}
                   >
                     <MenuItem value="pending">Pending</MenuItem>

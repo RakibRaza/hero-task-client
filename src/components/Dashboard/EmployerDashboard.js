@@ -1,12 +1,7 @@
-import {
-  Avatar,
-  Box,
-  Grid,
-  makeStyles,
-  Paper,
-  Typography, Container, TextField, FormControl, FormHelperText, MenuItem, Select, InputLabel, Button,
-} from "@material-ui/core";
 import React, { useEffect, useState } from "react";
+import {
+  Avatar, Box, Grid, makeStyles, Paper, Typography, Container, TextField, FormControl, FormHelperText, MenuItem, Select, InputLabel, Button,
+} from "@material-ui/core";
 import { useForm, Controller } from "react-hook-form";
 import { useAuthContext } from "../../context/AuthContext";
 
@@ -17,7 +12,6 @@ const useStyles = makeStyles((theme) => ({
     marginBottom: theme.spacing(4),
   },
   statusBtn: {
-
     '& .pending': {
       background: 'red',
       color: '#fff',
@@ -37,6 +31,7 @@ const useStyles = makeStyles((theme) => ({
     }
   }
 }));
+
 const EmployerDashboard = () => {
   const classes = useStyles();
   const [jobs, setJobs] = useState([])
@@ -50,6 +45,7 @@ const EmployerDashboard = () => {
     const data = await res.json();
     if (data) setJobs(data);
   }
+
   const setJobPostLeft = (job) => {
     fetch(`https://pwr-hero-task-server.herokuapp.com/updateUser/${user.email}`, {
       method: "PATCH",
@@ -61,18 +57,22 @@ const EmployerDashboard = () => {
       }),
     })
   }
-  if (new Date().getDate() === 1 && user.accountType === 'basic') {
+
+  const startMonth = new Date().getDate() === 1;
+
+  if (startMonth && user.accountType === 'basic') {
     setJobPostLeft(10)
     setUser({ ...user, jobPostLeft: 10 })
   }
-  if (new Date().getDate() === 1 && user.accountType === 'standard') {
+  if (startMonth && user.accountType === 'standard') {
     setJobPostLeft(20)
     setUser({ ...user, jobPostLeft: 20 })
   }
-  if (new Date().getDate() === 1 && user.accountType === 'premium') {
+  if (startMonth && user.accountType === 'premium') {
     setJobPostLeft(30)
     setUser({ ...user, jobPostLeft: 20 })
   }
+
   const onSubmit = async (data) => {
     if (user.jobPostLeft > 0) {
       data.status = 'pending'
@@ -85,6 +85,7 @@ const EmployerDashboard = () => {
         },
       })
       const job = res.json()
+
       if (job) {
         await fetch(`https://pwr-hero-task-server.herokuapp.com/updateUser/${user.email}`, {
           method: "PATCH",
@@ -103,6 +104,7 @@ const EmployerDashboard = () => {
       alert('Your job posting limit is over.')
     }
   }
+
   useEffect(() => {
     fetchJobs()
   }, [])
@@ -111,24 +113,26 @@ const EmployerDashboard = () => {
   return (
     <Container>
       <Grid container spacing={4} alignItems='center'>
+        {/* Profile card */}
         <Grid item xs={12} sm={6} md={5}>
           <Box component={Paper} p={5} align="center">
             <Avatar
-              alt="Remy Sharp"
+              alt={user?.name}
               src={currentUserInfo?.photoURL}
               className={classes.large}
             />
-            <Typography style={{ marginBottom: "16px" }} variant="h4">
+            <Typography variant="h4">
               {currentUserInfo?.displayName}
             </Typography>
             <Typography variant="h6">
               {user?.accountType}  {user?.role}
             </Typography>
             <Typography variant="h6">
-              Job post left this month - {user.jobPostLeft}
+              Job post left this month - {user?.jobPostLeft}
             </Typography>
           </Box>
         </Grid>
+        {/* Job Post Form */}
         <Grid item xs={12} sm={6} md={7}>
           <Typography variant='h4'>Post a job</Typography>
           <form onSubmit={handleSubmit(onSubmit)}>
@@ -194,7 +198,7 @@ const EmployerDashboard = () => {
               <Controller
                 render={(props) => (
                   <Select value={props.value} onChange={props.onChange}>
-                    {tags.map(item => <MenuItem key={item}>{item}</MenuItem>)}
+                    {tags.map(item => <MenuItem key={item} value={item}>{item}</MenuItem>)}
                   </Select>
                 )}
                 name="tag"
@@ -206,6 +210,7 @@ const EmployerDashboard = () => {
               />
               <FormHelperText>{errors.tag?.message}</FormHelperText>
             </FormControl>
+            {/* Description Textarea */}
             <TextField
               margin="normal"
               variant="outlined"
@@ -237,7 +242,7 @@ const EmployerDashboard = () => {
           </form>
         </Grid>
       </Grid>
-
+      {/* Jobs Card */}
       <Grid container spacing={4}>
         {jobs.map((job) => (
           <Grid key={job._id} item xs={12} sm={6} md={4}>

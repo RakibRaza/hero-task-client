@@ -59,7 +59,7 @@ const Jobs = () => {
             onChange={handleChange}
           >
             <MenuItem disabled value={filterJobs}>Filter jobs</MenuItem>
-            {tags.map(item => <MenuItem key={item}>{item}</MenuItem>)}
+            {tags.map(item => <MenuItem value={item} key={item}>{item}</MenuItem>)}
           </TextField>
         </Container>
         {/* All Job */}
