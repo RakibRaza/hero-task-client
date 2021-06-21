@@ -1,11 +1,22 @@
 import React, { useEffect, useState } from 'react'
-import { Box, Container, Grid, Typography, TextField, MenuItem } from "@material-ui/core";
+import { Box, Container, Avatar, Paper, Grid, Typography, TextField, MenuItem, makeStyles } from "@material-ui/core";
+import { useAuthContext } from '../../context/AuthContext';
 
-const Admin = () => {
+const useStyles = makeStyles(theme => ({
+  large: {
+    width: theme.spacing(12),
+    height: theme.spacing(12),
+    marginBottom: theme.spacing(4),
+  },
+}))
+
+const AdminDashboard = () => {
+  const classes = useStyles()
   const [jobs, setJobs] = useState([])
+  const { user, currentUserInfo } = useAuthContext()
 
   const handleChange = (e, id) => {
-    fetch(`http://localhost:8000/updateJob/${id}`, {
+    fetch(`https://pwr-hero-task-server.herokuapp.com/updateJob/${id}`, {
       method: "PATCH",
       headers: {
         "Content-type": "application/json; charset=UTF-8",
@@ -21,21 +32,36 @@ const Admin = () => {
           setJobs(newJobs)
         }
       })
-
   }
+
   useEffect(() => {
-    fetch("http://localhost:8000/pendingJobs")
+    fetch("https://pwr-hero-task-server.herokuapp.com/pendingJobs")
       .then((res) => res.json())
       .then((data) => setJobs(data));
   }, []);
-  return (
 
+  return (
     <Box pt={1} pb={5} style={{ background: "#f8f8f8" }}>
       <Container>
         <Grid container spacing={4}>
+          <Grid item xs={12} sm={6} md={4}>
+            <Box style={{ height: '100%' }} component={Paper} p={5} align="center">
+              <Avatar
+                alt="Remy Sharp"
+                src={currentUserInfo?.photoURL}
+                className={classes.large}
+              />
+              <Typography style={{ marginBottom: "16px" }} variant="h4">
+                {currentUserInfo?.displayName}
+              </Typography>
+              <Typography variant="h6">
+                {user?.accountType}  {user?.role}
+              </Typography>
+            </Box>
+          </Grid>
           {jobs.map((job) => (
             <Grid key={job._id} item xs={12} sm={6} md={4}>
-              <Box p={3} style={{ background: "#fff" }}>
+              <Box style={{ height: '100%' }} p={3} style={{ background: "#fff" }}>
                 <Typography variant="h5" align="center">
                   {job.title}
                 </Typography>
@@ -63,4 +89,4 @@ const Admin = () => {
   )
 }
 
-export default Admin
+export default AdminDashboard

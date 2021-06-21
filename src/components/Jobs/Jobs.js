@@ -1,18 +1,11 @@
 import React, { useEffect, useState } from "react";
-import { Box, Container, Grid, Typography, Button, TextField, MenuItem, makeStyles } from "@material-ui/core";
-import Job from '../Job/Job'
+import { Box, Container, Grid, Typography, Button, TextField, MenuItem } from "@material-ui/core";
 import ArrowForwardIcon from '@material-ui/icons/ArrowForward';
 import ArrowBackIcon from '@material-ui/icons/ArrowBack';
+import Job from '../Job/Job'
 
-const useStyles = makeStyles(theme => ({
-  filter: {
-    '& .MuiSelect-root': {
-      padding: '10px'
-    }
-  }
-}))
+
 const Jobs = () => {
-  const classes = useStyles()
   const [jobs, setJobs] = useState([]);
   const [filterJobs, setFilterJobs] = useState('Filter Jobs')
   const [currentPage, setCurrentPage] = useState(1);
@@ -40,7 +33,7 @@ const Jobs = () => {
     }
   }
   useEffect(() => {
-    fetch("http://localhost:8000/approvedJobs")
+    fetch("https://pwr-hero-task-server.herokuapp.com/approvedJobs")
       .then((res) => res.json())
       .then((data) => setJobs(data));
   }, []);
@@ -49,30 +42,33 @@ const Jobs = () => {
   const indexOfLastJobs = currentPage * jobsPerPage;
   const indexOfFirstJobs = indexOfLastJobs - jobsPerPage;
   const currentJobs = jobs.slice(indexOfFirstJobs, indexOfLastJobs);
+
+  const tags = ['react', 'vue', 'angular', 'php', 'nodejs', 'expressjs', 'python', 'java', 'laravel', 'javascript']
   return (
     <Box pt={1} pb={5} style={{ background: "#f8f8f8" }}>
       <Container>
         <Typography gutterBottom align="center" variant="h4">
           Find Your Dream Jobs
         </Typography>
+        {/* Filter Jobs */}
         <Container maxWidth='xs' component={Box} my={2} >
-          <TextField className={classes.filter}
+          <TextField
             select
             fullWidth
             value={filterJobs}
             onChange={handleChange}
           >
             <MenuItem disabled value={filterJobs}>Filter jobs</MenuItem>
-            <MenuItem value="react">React</MenuItem>
-            <MenuItem value="vue">Vue</MenuItem>
-            <MenuItem value="angular">Angular</MenuItem>
+            {tags.map(item => <MenuItem key={item}>{item}</MenuItem>)}
           </TextField>
         </Container>
+        {/* All Job */}
         <Grid container spacing={4}>
           {currentJobs.map((job) => (
             <Job key={job._id} {...job} />
           ))}
         </Grid>
+        {/* Prev Next Btn */}
         <Box mt={4} align='center'>
           <Button variant='outlined' startIcon={<ArrowBackIcon />} onClick={handlePrevBtn}>prev</Button>
           <Button variant='outlined' endIcon={<ArrowForwardIcon />} onClick={handleNextBtn}>Next</Button>

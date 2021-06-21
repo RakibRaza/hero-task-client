@@ -3,12 +3,13 @@ import { BrowserRouter as Router, Switch, Route } from "react-router-dom";
 import { theme } from "./theme";
 import NavBar from './components/NavBar/NavBar'
 import Login from "./components/Account/Login";
-import PrivateRoute from "./components/PrivateRoute/PrivateRoute";
-import Dashboard from "./components/Dashboard/Dashboard";
 import Signup from "./components/Account/Signup";
-import Admin from "./components/Admin/Admin";
-import Jobs from './components/Jobs/Jobs'
-import EmployerSignup from './components/EmployerSignup/EmployerSignup'
+import EmployerSignup from './components/EmployerSignup/EmployerSignup';
+import PrivateRoute from "./components/PrivateRoute/PrivateRoute";
+import EmployerDashboard from "./components/Dashboard/EmployerDashboard";
+import AdminDashboard from "./components/Dashboard/AdminDashboard";
+import JobSeekerDashboard from "./components/Dashboard/JobSeekerDashboard";
+import Jobs from './components/Jobs/Jobs';
 
 function App() {
   return (
@@ -16,9 +17,9 @@ function App() {
       <Router>
         <NavBar />
         <Switch>
-          <Route exact path="/">
+          <PrivateRoute exact path="/">
             <Jobs />
-          </Route>
+          </PrivateRoute>
           <Route path="/login">
             <Login />
           </Route>
@@ -28,11 +29,14 @@ function App() {
           <Route path="/employerSignup">
             <EmployerSignup />
           </Route>
-          <PrivateRoute path="/dashboard">
-            <Dashboard />
+          <PrivateRoute path="/employarDashboard">
+            <EmployerDashboard />
           </PrivateRoute>
-          <PrivateRoute path="/admin">
-            <Admin />
+          <PrivateRoute path="/adminDashboard">
+            <AdminDashboard />
+          </PrivateRoute>
+          <PrivateRoute path="/jobSeekerDashboard">
+            <JobSeekerDashboard />
           </PrivateRoute>
         </Switch>
         <CssBaseline />

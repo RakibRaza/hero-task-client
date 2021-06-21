@@ -1,21 +1,12 @@
+import React, { useState } from "react";
 import {
-  AppBar,
-  Avatar,
-  Box,
-  Button,
-  Drawer,
-  Hidden,
-  IconButton,
-  List,
-  ListItem,
-  ListItemText,
-  makeStyles,
-  Toolbar, Typography, Container
+  AppBar, Avatar, Box, Button, Drawer, Hidden, IconButton, List,
+  ListItem, ListItemText, makeStyles, Toolbar, Typography, Container
 } from "@material-ui/core";
 import MenuIcon from "@material-ui/icons/Menu";
-import React, { useState } from "react";
 import { Link, useHistory } from "react-router-dom";
 import { useAuthContext } from "../../context/AuthContext";
+
 const useStyles = makeStyles((theme) => ({
   drawer: {
     width: "250px",
@@ -32,6 +23,7 @@ const NavBar = () => {
   const history = useHistory()
   const { logOut, currentUserInfo, user, setUser } = useAuthContext();
   const [open, setOpen] = useState(false);
+
   const handleLogOut = async () => {
     try {
       await logOut();
@@ -53,13 +45,18 @@ const NavBar = () => {
                 Home
               </Button>
               {user?.role === 'employer' && (
-                <Button component={Link} to="/dashboard" color="inherit">
+                <Button component={Link} to="/employarDashboard" color="inherit">
                   Dashboard
                 </Button>
               )}
               {user?.role === 'admin' && (
-                <Button component={Link} to="/admin" color="inherit">
-                  Admin
+                <Button component={Link} to="/adminDashboard" color="inherit">
+                  Dashboard
+                </Button>
+              )}
+              {user?.role === 'jobSeeker' && (
+                <Button component={Link} to="/jobSeekerDashboard" color="inherit">
+                  Dashboard
                 </Button>
               )}
               {currentUserInfo ? (
@@ -94,31 +91,7 @@ const NavBar = () => {
                 <ListItem button component={Link} to="/">
                   <ListItemText primary="Home" />
                 </ListItem>
-                {currentUserInfo && (
-                  <ListItem button component={Link} to="/dashboard">
-                    <ListItemText primary="Dashboard" />
-                  </ListItem>
-                )}
               </List>
-              {currentUserInfo ? (
-                <Button
-                  onClick={handleLogOut}
-                  color="primary"
-                  variant="contained"
-                >
-                  Logout
-                </Button>
-              ) : (
-                <Button
-                  component={Link}
-                  to="/login"
-                  color="primary"
-                  variant="contained"
-                >
-                  Login
-                </Button>
-              )}
-              <Button>{currentUserInfo?.displayName}</Button>
             </Drawer>
           </Hidden>
         </Toolbar>

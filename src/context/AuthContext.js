@@ -25,7 +25,7 @@ const AuthProvider = ({ children }) => {
     const unSubscribe = auth.onAuthStateChanged((user) => {
       if (user) {
         fetch(
-          `http://localhost:8000/user?email=${user.email}`
+          `https://pwr-hero-task-server.herokuapp.com/user?email=${user.email}`
         )
           .then((res) => res.json())
           .then((data) => {
@@ -38,11 +38,8 @@ const AuthProvider = ({ children }) => {
     return unSubscribe;
   }, []);
 
-  const value = {
-    currentUserInfo,
-    logOut,
-    logIn, signUp, updateName, user, setUser
-  };
+  const value = { currentUserInfo, logOut, logIn, signUp, updateName, user, setUser };
+
   return (
     <AuthContext.Provider value={value}>
       {!loading && children}

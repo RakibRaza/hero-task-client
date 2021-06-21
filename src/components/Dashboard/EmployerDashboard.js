@@ -26,9 +26,18 @@ const useStyles = makeStyles((theme) => ({
       background: 'green',
       color: '#fff',
     }
+  },
+  tag: {
+    '& .MuiSelect-root': {
+      padding: '10px'
+    },
+    '& .MuiFormLabel-root': {
+      paddingLeft: '10px',
+      paddingTop: '3px'
+    }
   }
 }));
-const Dashboard = () => {
+const EmployerDashboard = () => {
   const classes = useStyles();
   const [jobs, setJobs] = useState([])
   const { currentUserInfo, user, setUser } = useAuthContext();
@@ -36,13 +45,13 @@ const Dashboard = () => {
 
   const fetchJobs = async () => {
     const res = await fetch(
-      `http://localhost:8000/employerJobs?email=${currentUserInfo.email}`
+      `https://pwr-hero-task-server.herokuapp.com/employerJobs?email=${currentUserInfo.email}`
     )
     const data = await res.json();
     if (data) setJobs(data);
   }
   const setJobPostLeft = (job) => {
-    fetch(`http://localhost:8000/updateUser/${user.email}`, {
+    fetch(`https://pwr-hero-task-server.herokuapp.com/updateUser/${user.email}`, {
       method: "PATCH",
       headers: {
         "Content-type": "application/json; charset=UTF-8",
@@ -68,7 +77,7 @@ const Dashboard = () => {
     if (user.jobPostLeft > 0) {
       data.status = 'pending'
       data.email = currentUserInfo.email
-      const res = await fetch('http://localhost:8000/addJob', {
+      const res = await fetch('https://pwr-hero-task-server.herokuapp.com/addJob', {
         method: 'POST',
         body: JSON.stringify(data),
         headers: {
@@ -77,7 +86,7 @@ const Dashboard = () => {
       })
       const job = res.json()
       if (job) {
-        await fetch(`http://localhost:8000/updateUser/${user.email}`, {
+        await fetch(`https://pwr-hero-task-server.herokuapp.com/updateUser/${user.email}`, {
           method: "PATCH",
           headers: {
             "Content-type": "application/json; charset=UTF-8",
@@ -90,12 +99,15 @@ const Dashboard = () => {
         setUser({ ...user, jobPostLeft: user.jobPostLeft - 1 })
         reset()
       }
+    } else {
+      alert('Your job posting limit is over.')
     }
   }
   useEffect(() => {
     fetchJobs()
   }, [])
 
+  const tags = ['react', 'vue', 'angular', 'php', 'nodejs', 'expressjs', 'python', 'java', 'laravel', 'javascript']
   return (
     <Container>
       <Grid container spacing={4} alignItems='center'>
@@ -123,7 +135,7 @@ const Dashboard = () => {
             <TextField
               margin="normal"
               variant="outlined"
-              placeholder="Job Title"
+              label="Job Title"
               fullWidth
               name="title"
               inputRef={register({
@@ -140,7 +152,7 @@ const Dashboard = () => {
             <TextField
               margin="normal"
               variant="outlined"
-              placeholder="Author name"
+              label="Author name"
               fullWidth
               name="author"
               size='small'
@@ -157,7 +169,7 @@ const Dashboard = () => {
             <TextField
               margin="normal"
               variant="outlined"
-              placeholder="Company Name"
+              label="Company Name"
               fullWidth
               name="company"
               size='small'
@@ -172,26 +184,17 @@ const Dashboard = () => {
               error={Boolean(errors.company)}
             />
             {/* Select */}
-            <FormControl
+            <FormControl className={classes.tag}
               fullWidth
               error={Boolean(errors.tag)}
-              margin='normal'
-              variant='outlined'
-              size='small'
             >
-              <InputLabel style={{ zIndex: '10', }} >
+              <InputLabel>
                 Select Tag
               </InputLabel>
               <Controller
                 render={(props) => (
                   <Select value={props.value} onChange={props.onChange}>
-                    <MenuItem value="react">React</MenuItem>
-                    <MenuItem value="vue">vue</MenuItem>
-                    <MenuItem value="angular">angular</MenuItem>
-                    <MenuItem value="PHP">PHP</MenuItem>
-                    <MenuItem value="nodejs">NodeJS</MenuItem>
-                    <MenuItem value="python">python</MenuItem>
-                    <MenuItem value="java">java</MenuItem>
+                    {tags.map(item => <MenuItem key={item}>{item}</MenuItem>)}
                   </Select>
                 )}
                 name="tag"
@@ -257,4 +260,4 @@ const Dashboard = () => {
   );
 };
 
-export default Dashboard;
+export default EmployerDashboard;

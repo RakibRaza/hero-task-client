@@ -2,11 +2,6 @@ import { unstable_createMuiStrictModeTheme as createMuiTheme } from "@material-u
 
 export const theme = createMuiTheme({
   overrides: {
-    MuiInputBase: {
-      root: {
-        backgroundColor: "#fff",
-      },
-    },
     MuiButton: {
       containedPrimary: {
         backgroundImage: "linear-gradient(90deg, #f95fb2 0%, #fc796c 100%)",
