@@ -12,7 +12,7 @@ const useStyles = makeStyles((theme) => ({
 const Job = ({ title, author, company, desc }) => {
   const classes = useStyles();
   return (
-    <Grid item xs={12} sm={6} md={4}>
+    <Grid item xs={12} sm={6} md={3}>
       <Box p={3} style={{ background: "#fff" }}>
         <Typography variant="h5" align="center">
           {title}
@@ -20,7 +20,7 @@ const Job = ({ title, author, company, desc }) => {
         <Typography align="center" variant="h6">
           {author}
         </Typography>
-        <Typography>{desc}</Typography>
+        <Typography align="center">{desc}</Typography>
         <Box align='center' mt={2}>
           <Button size='large' color='primary' variant='contained'>Apply</Button>
         </Box>

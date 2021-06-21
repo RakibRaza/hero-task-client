@@ -94,7 +94,7 @@ const EmployerSignupForm = () => {
             'Content-type': 'application/json; charset=UTF-8',
           },
         })
-        setUser([data])
+        setUser(data)
         history.replace("/");
 
       } catch (error) {

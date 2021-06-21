@@ -7,6 +7,7 @@ import Login from "./pages/Login";
 import PrivateRoute from "./components/PrivateRoute/PrivateRoute";
 import Dashboard from "./pages/Dashboard";
 import Signup from "./pages/Signup";
+import Admin from "./pages/Admin";
 import EmployerSignup from './pages/EmployerSignup/EmployerSignup'
 function App() {
   return (
@@ -28,6 +29,9 @@ function App() {
           </Route>
           <PrivateRoute path="/dashboard">
             <Dashboard />
+          </PrivateRoute>
+          <PrivateRoute path="/admin">
+            <Admin />
           </PrivateRoute>
         </Switch>
         <CssBaseline />

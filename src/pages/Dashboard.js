@@ -4,9 +4,9 @@ import {
   Grid,
   makeStyles,
   Paper,
-  Typography, Container, TextField, FormControl, FormHelperText, MenuItem, Select, InputLabel, Button
+  Typography, Container, TextField, FormControl, FormHelperText, MenuItem, Select, InputLabel, Button,
 } from "@material-ui/core";
-import React from "react";
+import React, { useEffect, useState } from "react";
 import { useForm, Controller } from "react-hook-form";
 import { useAuthContext } from "../context/AuthContext";
 const useStyles = makeStyles((theme) => ({
@@ -18,21 +18,49 @@ const useStyles = makeStyles((theme) => ({
 }));
 const Dashboard = () => {
   const classes = useStyles();
-  const { currentUserInfo } = useAuthContext();
-  const { register, handleSubmit, errors, control } = useForm();
+  const [jobs, setJobs] = useState([])
+  const { currentUserInfo, user, setUser } = useAuthContext();
+  const { register, handleSubmit, errors, control, reset } = useForm();
 
-
-  const onSubmit = async (data) => {
-    data.status = 'pending'
-    await fetch('http://localhost:8000/addJob', {
-      method: 'POST',
-      body: JSON.stringify(data),
-      headers: {
-        'Content-type': 'application/json; charset=UTF-8',
-      },
-    })
-    console.log(data)
+  const fetchJobs = async () => {
+    const res = await fetch(
+      `http://localhost:8000/employerJobs?email=${currentUserInfo.email}`
+    )
+    const data = await res.json();
+    if (data) setJobs(data);
   }
+  const onSubmit = async (data) => {
+    if (user.jobPostLeft > 0) {
+      data.status = 'pending'
+      data.email = currentUserInfo.email
+      const res = await fetch('http://localhost:8000/addJob', {
+        method: 'POST',
+        body: JSON.stringify(data),
+        headers: {
+          'Content-type': 'application/json; charset=UTF-8',
+        },
+      })
+      const job = res.json()
+      if (job) {
+        await fetch(`http://localhost:8000/updateUser/${user.email}`, {
+          method: "PATCH",
+          headers: {
+            "Content-type": "application/json; charset=UTF-8",
+          },
+          body: JSON.stringify({
+            jobPostLeft: user.jobPostLeft - 1,
+          }),
+        })
+        fetchJobs()
+        setUser({ ...user, jobPostLeft: user.jobPostLeft - 1 })
+        reset()
+      }
+    }
+  }
+  useEffect(() => {
+    fetchJobs()
+  }, [])
+
   return (
     <Container>
       <Grid container spacing={4} alignItems='center'>
@@ -47,7 +75,10 @@ const Dashboard = () => {
               {currentUserInfo?.displayName}
             </Typography>
             <Typography variant="h6">
-              {currentUserInfo?.isAdmin ? "Admin" : "Client"}
+              {user?.accountType}  {user?.role}
+            </Typography>
+            <Typography variant="h6">
+              Job post left this month - {user.jobPostLeft}
             </Typography>
           </Box>
         </Grid>
@@ -74,19 +105,19 @@ const Dashboard = () => {
             <TextField
               margin="normal"
               variant="outlined"
-              placeholder="Name"
+              placeholder="Author name"
               fullWidth
-              name="name"
+              name="author"
               size='small'
               inputRef={register({
-                required: "Name is required.",
+                required: "Author name is required.",
                 minLength: {
                   value: 3,
-                  message: "Name at least 3 caracters",
+                  message: "Author name at least 3 caracters",
                 },
               })}
-              helperText={errors.name?.message}
-              error={Boolean(errors.name)}
+              helperText={errors.author?.message}
+              error={Boolean(errors.author)}
             />
             <TextField
               margin="normal"
@@ -110,8 +141,10 @@ const Dashboard = () => {
               fullWidth
               error={Boolean(errors.tag)}
               margin='normal'
+              variant='outlined'
+              size='small'
             >
-              <InputLabel style={{ zIndex: '10' }} >
+              <InputLabel style={{ zIndex: '10', }} >
                 Select Tag
               </InputLabel>
               <Controller
@@ -165,6 +198,32 @@ const Dashboard = () => {
             </Box>
           </form>
         </Grid>
+      </Grid>
+
+      <Grid container spacing={4}>
+        {jobs.map((job) => (
+          <Grid key={job._id} item xs={12} sm={6} md={4}>
+            <Box p={3} style={{ background: "#fff" }}>
+              <Typography variant="h5" align="center">
+                {job.title}
+              </Typography>
+              <Typography align="center" variant="h6">
+                {job.author}
+              </Typography>
+              <Typography>{job.desc}</Typography>
+              <Box align='center' mt={2}>
+                <TextField
+                  select
+                  fullWidth
+                  value={job.status}
+                >
+                  <MenuItem value="pending">Pending</MenuItem>
+                  <MenuItem value="done">Done</MenuItem>
+                </TextField>
+              </Box>
+            </Box>
+          </Grid>
+        ))}
       </Grid>
     </Container>
   );

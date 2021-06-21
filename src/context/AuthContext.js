@@ -5,7 +5,7 @@ const AuthContext = React.createContext();
 
 const AuthProvider = ({ children }) => {
   const [currentUserInfo, setCurrentUserInfo] = useState();
-  const [user, setUser] = useState([])
+  const [user, setUser] = useState({})
   const [loading, setLoading] = useState(true);
 
   const signUp = (email, password) => {
@@ -29,7 +29,7 @@ const AuthProvider = ({ children }) => {
         )
           .then((res) => res.json())
           .then((data) => {
-            if (data) setUser(data)
+            if (data) setUser(data[0])
           });
       }
       setCurrentUserInfo(user);

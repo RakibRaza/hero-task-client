@@ -4,7 +4,7 @@ import Job from "../Job/Job";
 const Jobs = () => {
   const [jobs, setJobs] = useState([]);
   useEffect(() => {
-    fetch("http://localhost:8000/jobs")
+    fetch("http://localhost:8000/approvedJobs")
       .then((res) => res.json())
       .then((data) => setJobs(data));
   }, []);
@@ -15,8 +15,8 @@ const Jobs = () => {
           Find Your Dream Jobs
         </Typography>
         <Grid container spacing={4}>
-          {jobs.map((team) => (
-            <Job key={team._id} {...team} />
+          {jobs.map((job) => (
+            <Job key={job._id} {...job} />
           ))}
         </Grid>
       </Container>

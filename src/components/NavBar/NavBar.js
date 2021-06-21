@@ -14,7 +14,7 @@ import {
 } from "@material-ui/core";
 import MenuIcon from "@material-ui/icons/Menu";
 import React, { useState } from "react";
-import { Link } from "react-router-dom";
+import { Link, useHistory } from "react-router-dom";
 import { useAuthContext } from "../../context/AuthContext";
 const useStyles = makeStyles((theme) => ({
   drawer: {
@@ -29,12 +29,14 @@ const useStyles = makeStyles((theme) => ({
 
 const NavBar = () => {
   const classes = useStyles();
+  const history = useHistory()
   const { logOut, currentUserInfo, user, setUser } = useAuthContext();
   const [open, setOpen] = useState(false);
   const handleLogOut = async () => {
     try {
       await logOut();
       setUser({})
+      history.replace('/')
     } catch (error) {
       console.log(error.message);
     }
@@ -50,9 +52,14 @@ const NavBar = () => {
               <Button component={Link} to="/" color="inherit">
                 Home
               </Button>
-              {user[0]?.role === 'employer' && (
+              {user?.role === 'employer' && (
                 <Button component={Link} to="/dashboard" color="inherit">
                   Dashboard
+                </Button>
+              )}
+              {user?.role === 'admin' && (
+                <Button component={Link} to="/admin" color="inherit">
+                  Admin
                 </Button>
               )}
               {currentUserInfo ? (
