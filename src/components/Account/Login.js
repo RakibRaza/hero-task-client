@@ -1,16 +1,18 @@
 import {
   Box,
   Button,
+  Checkbox,
   Container,
+  FormControlLabel,
   makeStyles,
   Paper,
   TextField,
   Typography,
 } from "@material-ui/core";
 import React, { useState } from "react";
-import { NavLink, useHistory } from "react-router-dom";
+import { NavLink, useHistory, useLocation } from "react-router-dom";
 import { useForm } from "react-hook-form";
-import { useAuthContext } from "../context/AuthContext";
+import { useAuthContext } from "../../context/AuthContext";
 import { Alert } from "@material-ui/lab";
 
 const useStyles = makeStyles((theme) => ({
@@ -33,30 +35,24 @@ const useStyles = makeStyles((theme) => ({
     },
   },
 }));
-const Signup = () => {
+const Login = () => {
   const classes = useStyles();
+  const { logIn } = useAuthContext();
+  const location = useLocation();
   const history = useHistory();
-  const { signUp, updateName } = useAuthContext();
-  const { register, handleSubmit, errors } = useForm();
   const [error, setError] = useState("");
+  const { register, handleSubmit, errors } = useForm();
+  let { from } = location.state || { from: { pathname: "/" } };
   const onSubmit = async (data) => {
-    data.role = 'jobSeeker'
     try {
       setError("");
-      await signUp(data.email, data.password);
-      await updateName(data.name);
-      await fetch('http://localhost:8000/addUser', {
-        method: 'POST',
-        body: JSON.stringify(data),
-        headers: {
-          'Content-type': 'application/json; charset=UTF-8',
-        },
-      })
-      history.replace("/");
+      await logIn(data.email, data.password);
+      history.replace(from);
     } catch (error) {
-      setError("User alredy exist.");
+      setError("No user Found.");
     }
   };
+
   return (
     <Box className={classes.root}>
       <Container maxWidth="sm">
@@ -66,7 +62,7 @@ const Signup = () => {
             style={{ fontWeight: "bold" }}
             variant="h5"
           >
-            Create an account
+            Login
           </Typography>
           {error && (
             <Alert variant="filled" severity="error">
@@ -75,22 +71,10 @@ const Signup = () => {
           )}
           <form onSubmit={handleSubmit(onSubmit)}>
             <TextField
-              inputRef={register({
-                required: "Name is required.",
-                minLength: {
-                  value: 3,
-                  message: "Name at least 3 caracters",
-                },
-              })}
-              name="name"
-              margin="normal"
-              placeholder="Name"
-              fullWidth
-              helperText={errors.name?.message}
-              error={Boolean(errors.name)}
-            />
-            <TextField
               name="email"
+              margin="normal"
+              placeholder='Email'
+              fullWidth
               inputRef={register({
                 required: "Email is required.",
                 pattern: {
@@ -98,14 +82,15 @@ const Signup = () => {
                   message: "Enter a valid email",
                 },
               })}
-              margin="normal"
-              placeholder="Email"
-              fullWidth
               helperText={errors.email?.message}
               error={Boolean(errors.email)}
             />
             <TextField
               name="password"
+              margin="normal"
+              placeholder="Password"
+              fullWidth
+              type="password"
               inputRef={register({
                 required: "Password is required.",
                 pattern: {
@@ -114,13 +99,15 @@ const Signup = () => {
                     "Password must contains letter number and mninum 6 caracters",
                 },
               })}
-              type="password"
-              margin="normal"
-              placeholder="Password"
-              fullWidth
               helperText={errors.password?.message}
               error={Boolean(errors.password)}
             />
+            <Box className={classes.checkbox}>
+              <FormControlLabel control={<Checkbox />} label="Remember Me" />
+              <Typography className={classes.link}>
+                <NavLink to="/forgot-password">Forgot Password</NavLink>
+              </Typography>
+            </Box>
             <Box my={3}>
               <Button
                 type="submit"
@@ -128,11 +115,16 @@ const Signup = () => {
                 variant="contained"
                 fullWidth
               >
-                Create an account
+                Login
               </Button>
             </Box>
+            <Typography gutterBottom className={classes.link} align="center">
+              Don't have an account ?{" "}
+              <NavLink to="/signup"> Create a job seeker account</NavLink>
+            </Typography>
             <Typography className={classes.link} align="center">
-              Already have an account ? <NavLink to="/login"> Login</NavLink>
+              Don't have an account ?{" "}
+              <NavLink to="/employerSignup"> Create an employer account</NavLink>
             </Typography>
           </form>
         </Paper>
@@ -141,4 +133,4 @@ const Signup = () => {
   );
 };
 
-export default Signup;
+export default Login;

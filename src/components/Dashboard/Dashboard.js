@@ -8,13 +8,25 @@ import {
 } from "@material-ui/core";
 import React, { useEffect, useState } from "react";
 import { useForm, Controller } from "react-hook-form";
-import { useAuthContext } from "../context/AuthContext";
+import { useAuthContext } from "../../context/AuthContext";
+
 const useStyles = makeStyles((theme) => ({
   large: {
     width: theme.spacing(20),
     height: theme.spacing(20),
     marginBottom: theme.spacing(4),
   },
+  statusBtn: {
+
+    '& .pending': {
+      background: 'red',
+      color: '#fff',
+    },
+    '& .done': {
+      background: 'green',
+      color: '#fff',
+    }
+  }
 }));
 const Dashboard = () => {
   const classes = useStyles();
@@ -28,6 +40,29 @@ const Dashboard = () => {
     )
     const data = await res.json();
     if (data) setJobs(data);
+  }
+  const setJobPostLeft = (job) => {
+    fetch(`http://localhost:8000/updateUser/${user.email}`, {
+      method: "PATCH",
+      headers: {
+        "Content-type": "application/json; charset=UTF-8",
+      },
+      body: JSON.stringify({
+        jobPostLeft: job,
+      }),
+    })
+  }
+  if (new Date().getDate() === 1 && user.accountType === 'basic') {
+    setJobPostLeft(10)
+    setUser({ ...user, jobPostLeft: 10 })
+  }
+  if (new Date().getDate() === 1 && user.accountType === 'standard') {
+    setJobPostLeft(20)
+    setUser({ ...user, jobPostLeft: 20 })
+  }
+  if (new Date().getDate() === 1 && user.accountType === 'premium') {
+    setJobPostLeft(30)
+    setUser({ ...user, jobPostLeft: 20 })
   }
   const onSubmit = async (data) => {
     if (user.jobPostLeft > 0) {
@@ -211,15 +246,8 @@ const Dashboard = () => {
                 {job.author}
               </Typography>
               <Typography>{job.desc}</Typography>
-              <Box align='center' mt={2}>
-                <TextField
-                  select
-                  fullWidth
-                  value={job.status}
-                >
-                  <MenuItem value="pending">Pending</MenuItem>
-                  <MenuItem value="done">Done</MenuItem>
-                </TextField>
+              <Box className={classes.statusBtn} align='center' mt={2}>
+                <Button className={job.status}>{job.status}</Button>
               </Box>
             </Box>
           </Grid>

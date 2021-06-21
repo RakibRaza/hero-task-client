@@ -1,14 +1,15 @@
 import { CssBaseline, ThemeProvider } from "@material-ui/core";
 import { BrowserRouter as Router, Switch, Route } from "react-router-dom";
 import { theme } from "./theme";
-import Home from "./pages/Home";
 import NavBar from './components/NavBar/NavBar'
-import Login from "./pages/Login";
+import Login from "./components/Account/Login";
 import PrivateRoute from "./components/PrivateRoute/PrivateRoute";
-import Dashboard from "./pages/Dashboard";
-import Signup from "./pages/Signup";
-import Admin from "./pages/Admin";
-import EmployerSignup from './pages/EmployerSignup/EmployerSignup'
+import Dashboard from "./components/Dashboard/Dashboard";
+import Signup from "./components/Account/Signup";
+import Admin from "./components/Admin/Admin";
+import Jobs from './components/Jobs/Jobs'
+import EmployerSignup from './components/EmployerSignup/EmployerSignup'
+
 function App() {
   return (
     <ThemeProvider theme={theme}>
@@ -16,7 +17,7 @@ function App() {
         <NavBar />
         <Switch>
           <Route exact path="/">
-            <Home />
+            <Jobs />
           </Route>
           <Route path="/login">
             <Login />
